@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../api";
+import sanjaySirVideo from "../videos/sanjaysir.mp4";
 
 const newsCopy = {
   title: {
@@ -131,6 +132,8 @@ function localText(item, field, language) {
 export default function Home({ language = "en" }) {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isHeroPlaying, setIsHeroPlaying] = useState(true);
+  const heroVideoRef = useRef(null);
   const text = pageText[language];
 
   useEffect(() => {
@@ -143,19 +146,50 @@ export default function Home({ language = "en" }) {
 
   const visibleNews = news.length > 0 ? news : demoNews;
   const [featured, ...cards] = visibleNews;
+  const heroNews = featured
+    ? { ...featured, mediaUrl: sanjaySirVideo, type: "video" }
+    : null;
+
+  const toggleHeroVideo = () => {
+    const video = heroVideoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    if (video.paused) {
+      video.play();
+      return;
+    }
+
+    video.pause();
+  };
 
   return (
     <section className="news-page">
       {loading && <p className="muted">{text.loading}</p>}
 
-      {featured && (
+      {heroNews && (
         <article className="featured-news">
-          <Media item={featured} />
+          <Media
+            item={heroNews}
+            isHero
+            videoRef={heroVideoRef}
+            onPause={() => setIsHeroPlaying(false)}
+            onPlay={() => setIsHeroPlaying(true)}
+          />
           <div className="news-overlay">
-            {featured.isLive && <span className="live-badge">{text.live}</span>}
-            <button className="play-button" type="button" aria-label={text.playVideo}>▶</button>
-            <h1>{localText(featured, "title", language)}</h1>
-            {featured.description && <p>{localText(featured, "description", language)}</p>}
+            {heroNews.isLive && <span className="live-badge">{text.live}</span>}
+            <button
+              className="play-button"
+              type="button"
+              aria-label={isHeroPlaying ? "Pause video" : text.playVideo}
+              onClick={toggleHeroVideo}
+            >
+              {isHeroPlaying ? "||" : "▶"}
+            </button>
+            <h1>{localText(heroNews, "title", language)}</h1>
+            {heroNews.description && <p>{localText(heroNews, "description", language)}</p>}
             <div className="news-meta">
               <span>◉ {text.watching}</span>
               <span>◷ {text.started}</span>
@@ -186,13 +220,25 @@ export default function Home({ language = "en" }) {
   );
 }
 
-function Media({ item }) {
+function Media({ item, isHero = false, videoRef, onPause, onPlay }) {
   if (!item.mediaUrl) {
     return <div className="media-fallback" />;
   }
 
   if (item.type === "video" && !item.mediaUrl.includes("images.unsplash.com")) {
-    return <video src={item.mediaUrl} controls />;
+    return (
+      <video
+        ref={videoRef}
+        src={item.mediaUrl}
+        autoPlay={isHero}
+        controls={!isHero}
+        loop={isHero}
+        muted={isHero}
+        onPause={onPause}
+        onPlay={onPlay}
+        playsInline={isHero}
+      />
+    );
   }
 
   return <img src={item.mediaUrl} alt="" />;
