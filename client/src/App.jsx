@@ -40,11 +40,13 @@ const translations = {
 
 function App() {
   const [language, setLanguage] = useState("en");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const t = translations[language];
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <>
-      <header className="app-header">
+      <header className={`app-header ${isMenuOpen ? "menu-open" : ""}`}>
         <div className="top-header">
           <WeatherInfo language={language} labels={t} />
 
@@ -78,11 +80,31 @@ function App() {
         </div>
 
         <div className="main-header">
-          <NavLink className="brand" to="/">BHARATNEWS</NavLink>
+          <button
+            className="hamburger-button"
+            type="button"
+            aria-label="Open menu"
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen((open) => !open)}
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
+
+          <NavLink className="brand" to="/" onClick={closeMenu}>BHARATNEWS</NavLink>
+
+          <button
+            className="mobile-language-button"
+            type="button"
+            onClick={() => setLanguage((current) => (current === "hi" ? "en" : "hi"))}
+          >
+            {language === "hi" ? "EN" : "हिंदी"}
+          </button>
 
           <nav className="primary-nav" aria-label="Primary navigation">
-            <NavLink to="/">{t.home}</NavLink>
-            <NavLink to="/voting">{t.live}</NavLink>
+            <NavLink to="/" onClick={closeMenu}>{t.home}</NavLink>
+            <NavLink to="/voting" onClick={closeMenu}>{t.live}</NavLink>
           </nav>
 
           <form className="site-search" role="search">
@@ -91,10 +113,23 @@ function App() {
           </form>
 
           <nav className="action-nav" aria-label={t.quickActions}>
-            <NavLink to="/voting"><span aria-hidden="true">▱</span> {t.voting}</NavLink>
-            <NavLink to="/upload"><span aria-hidden="true">↥</span> {t.upload}</NavLink>
-            <NavLink className="icon-link" to="/login" aria-label={t.login}>◎</NavLink>
+            <NavLink to="/voting" onClick={closeMenu}><span aria-hidden="true">▱</span> {t.voting}</NavLink>
+            <NavLink to="/upload" onClick={closeMenu}><span aria-hidden="true">↥</span> {t.upload}</NavLink>
+            <NavLink className="icon-link" to="/login" aria-label={t.login} onClick={closeMenu}>◎</NavLink>
           </nav>
+
+          <div className="mobile-menu-panel">
+            <WeatherInfo language={language} labels={t} />
+            <time className="today-date" dateTime="2026-05-01">{t.date}</time>
+            <div className="top-actions">
+              <a className="social-link facebook" href="#facebook" aria-label="Facebook">f</a>
+              <a className="social-link instagram" href="#instagram" aria-label="Instagram">◎</a>
+              <a className="social-link x-link" href="#x" aria-label="X">X</a>
+              <a className="social-link whatsapp" href="#whatsapp" aria-label="WhatsApp">●</a>
+              <a className="social-link youtube" href="#youtube" aria-label="YouTube">▶</a>
+              <NavLink className="login-chip" to="/login" onClick={closeMenu}>{t.login}</NavLink>
+            </div>
+          </div>
         </div>
       </header>
 
