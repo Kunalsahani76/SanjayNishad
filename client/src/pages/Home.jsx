@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api";
-import sanjaySirVideo from "../videos/sanjaysir.mp4";
+import heroVideo from "../videos/sanjaysir.mp4";
 
 const newsCopy = {
   title: {
@@ -78,31 +78,12 @@ const demoNews = [
     mediaUrl: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80",
     type: "video",
   },
-  {
-    _id: "demo-8",
-    title: newsCopy.title.en,
-    titleHi: newsCopy.title.hi,
-    description: newsCopy.description.en,
-    descriptionHi: newsCopy.description.hi,
-    mediaUrl: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
-    type: "video",
-  },
-  {
-    _id: "demo-9",
-    title: newsCopy.title.en,
-    titleHi: newsCopy.title.hi,
-    description: newsCopy.description.en,
-    descriptionHi: newsCopy.description.hi,
-    mediaUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80",
-    type: "video",
-  },
 ];
 
 const pageText = {
   en: {
     loading: "Loading news...",
     live: "Live",
-    playVideo: "Play video",
     watching: "2.4M watching",
     started: "Started 42 minutes ago",
     views: "2.4M",
@@ -112,7 +93,6 @@ const pageText = {
   hi: {
     loading: "समाचार लोड हो रहे हैं...",
     live: "लाइव",
-    playVideo: "वीडियो चलाएं",
     watching: "2.4M देख रहे हैं",
     started: "42 मिनट पहले शुरू हुआ",
     views: "2.4M",
@@ -132,8 +112,6 @@ function localText(item, field, language) {
 export default function Home({ language = "en" }) {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isHeroPlaying, setIsHeroPlaying] = useState(true);
-  const heroVideoRef = useRef(null);
   const text = pageText[language];
 
   useEffect(() => {
@@ -146,50 +124,18 @@ export default function Home({ language = "en" }) {
 
   const visibleNews = news.length > 0 ? news : demoNews;
   const [featured, ...cards] = visibleNews;
-  const heroNews = featured
-    ? { ...featured, mediaUrl: sanjaySirVideo, type: "video" }
-    : null;
-
-  const toggleHeroVideo = () => {
-    const video = heroVideoRef.current;
-
-    if (!video) {
-      return;
-    }
-
-    if (video.paused) {
-      video.play();
-      return;
-    }
-
-    video.pause();
-  };
 
   return (
     <section className="news-page">
       {loading && <p className="muted">{text.loading}</p>}
 
-      {heroNews && (
-        <article className="featured-news">
-          <Media
-            item={heroNews}
-            isHero
-            videoRef={heroVideoRef}
-            onPause={() => setIsHeroPlaying(false)}
-            onPlay={() => setIsHeroPlaying(true)}
-          />
+      {featured && (
+        <article className="featured-news video-feature">
+          <HeroVideo />
           <div className="news-overlay">
-            {heroNews.isLive && <span className="live-badge">{text.live}</span>}
-            <button
-              className="play-button"
-              type="button"
-              aria-label={isHeroPlaying ? "Pause video" : text.playVideo}
-              onClick={toggleHeroVideo}
-            >
-              {isHeroPlaying ? "||" : "▶"}
-            </button>
-            <h1>{localText(heroNews, "title", language)}</h1>
-            {heroNews.description && <p>{localText(heroNews, "description", language)}</p>}
+            {featured.isLive && <span className="live-badge">{text.live}</span>}
+            <h1>{localText(featured, "title", language)}</h1>
+            {featured.description && <p>{localText(featured, "description", language)}</p>}
             <div className="news-meta">
               <span>◉ {text.watching}</span>
               <span>◷ {text.started}</span>
@@ -220,25 +166,19 @@ export default function Home({ language = "en" }) {
   );
 }
 
-function Media({ item, isHero = false, videoRef, onPause, onPlay }) {
+function HeroVideo() {
+  return (
+    <video src={heroVideo} autoPlay controls loop muted playsInline />
+  );
+}
+
+function Media({ item }) {
   if (!item.mediaUrl) {
     return <div className="media-fallback" />;
   }
 
   if (item.type === "video" && !item.mediaUrl.includes("images.unsplash.com")) {
-    return (
-      <video
-        ref={videoRef}
-        src={item.mediaUrl}
-        autoPlay={isHero}
-        controls={!isHero}
-        loop={isHero}
-        muted={isHero}
-        onPause={onPause}
-        onPlay={onPlay}
-        playsInline={isHero}
-      />
-    );
+    return <video src={item.mediaUrl} controls />;
   }
 
   return <img src={item.mediaUrl} alt="" />;

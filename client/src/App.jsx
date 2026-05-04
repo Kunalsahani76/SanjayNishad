@@ -39,10 +39,15 @@ const translations = {
 };
 
 function App() {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState(() => localStorage.getItem("language") || "en");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const t = translations[language];
   const closeMenu = () => setIsMenuOpen(false);
+
+  useEffect(() => {
+    localStorage.setItem("language", language);
+    document.documentElement.lang = language === "hi" ? "hi" : "en";
+  }, [language]);
 
   return (
     <>

@@ -523,6 +523,11 @@ p {
   line-height: 1.18;
 }
 
+.video-feature .news-overlay {
+  bottom: 54px;
+  pointer-events: none;
+}
+
 .load-more {
   background: transparent;
   border: 0;
