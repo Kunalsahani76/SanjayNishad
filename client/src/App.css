@@ -523,9 +523,8 @@ p {
   line-height: 1.18;
 }
 
-.video-feature .news-overlay {
-  bottom: 54px;
-  pointer-events: none;
+.video-feature::after {
+  display: none;
 }
 
 .load-more {

@@ -132,15 +132,6 @@ export default function Home({ language = "en" }) {
       {featured && (
         <article className="featured-news video-feature">
           <HeroVideo />
-          <div className="news-overlay">
-            {featured.isLive && <span className="live-badge">{text.live}</span>}
-            <h1>{localText(featured, "title", language)}</h1>
-            {featured.description && <p>{localText(featured, "description", language)}</p>}
-            <div className="news-meta">
-              <span>◉ {text.watching}</span>
-              <span>◷ {text.started}</span>
-            </div>
-          </div>
         </article>
       )}
 
