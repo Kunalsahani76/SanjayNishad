@@ -255,8 +255,10 @@
   font-size: 14px;
   font-weight: 400;
   text-decoration: none;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
 }
 
+.primary-nav a:hover,
 .primary-nav a.active {
   color: var(--brand-red);
   text-decoration: underline;
@@ -275,6 +277,13 @@
   max-width: 314px;
   min-height: 39px;
   padding: 0 18px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.site-search:hover,
+.site-search:focus-within {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px rgba(167, 25, 25, 0.1);
 }
 
 .site-search button {
@@ -323,11 +332,13 @@
   padding: 0 22px;
   text-decoration: none;
   text-transform: uppercase;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
 .action-nav a:hover,
 .action-nav a.active {
   background: var(--brand-red-dark);
+  transform: translateY(-1px);
 }
 
 .action-nav .icon-link {
@@ -829,7 +840,7 @@ textarea {
 
 @media (max-width: 640px) {
   .app-header {
-    background: var(--brand-blue);
+    background: var(--surface);
   }
 
   .top-header {
@@ -838,8 +849,8 @@ textarea {
 
   .main-header {
     align-items: center;
-    background: var(--brand-blue);
-    color: #ffffff;
+    background: var(--surface);
+    color: var(--ink);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -849,13 +860,19 @@ textarea {
   }
 
   .hamburger-button {
-    color: #ffffff;
+    color: #334155;
     display: inline-flex;
     margin-right: 2px;
   }
 
+  .hamburger-button:hover,
+  .mobile-language-button:hover {
+    background: rgba(167, 25, 25, 0.08);
+    border-radius: 4px;
+  }
+
   .brand {
-    color: #ffffff;
+    color: var(--brand-red);
     flex: 1 1 0;
     font-size: 17px;
     letter-spacing: 0;
@@ -865,7 +882,7 @@ textarea {
   .mobile-language-button {
     background: transparent;
     border: 0;
-    color: #ffffff;
+    color: var(--brand-red);
     cursor: pointer;
     display: inline-flex;
     flex: 0 0 auto;
@@ -878,14 +895,14 @@ textarea {
 
   .primary-nav {
     align-items: stretch;
-    background: #06295b;
+    background: var(--surface);
     bottom: 0;
     display: none;
     flex-direction: column;
     gap: 0;
     left: 0;
     overflow-y: auto;
-    padding: 26px 22px 0;
+    padding: 128px 22px 0;
     position: fixed;
     right: 0;
     scrollbar-width: none;
@@ -899,7 +916,7 @@ textarea {
   }
 
   .primary-nav a {
-    color: #ffffff;
+    color: #111827;
     flex: 0 0 auto;
     font-family: Georgia, "Times New Roman", serif;
     font-size: 15px;
@@ -910,13 +927,14 @@ textarea {
   }
 
   .primary-nav a.active {
-    color: #ffffff;
-    text-decoration: none;
+    color: var(--brand-red);
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
 
   .site-search {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.32);
+    background: transparent;
+    border-color: #4b5563;
     display: none;
     left: 22px;
     margin: 0;
@@ -924,7 +942,7 @@ textarea {
     min-height: 38px;
     position: fixed;
     right: 22px;
-    top: 158px;
+    top: 78px;
     width: auto;
     z-index: 21;
   }
@@ -932,11 +950,11 @@ textarea {
   .site-search button,
   .site-search input,
   .site-search input::placeholder {
-    color: #ffffff;
+    color: #334155;
   }
 
   .action-nav {
-    align-items: stretch;
+    align-items: flex-start;
     background: transparent;
     display: none;
     flex-direction: column;
@@ -944,43 +962,47 @@ textarea {
     left: 22px;
     margin: 0;
     position: fixed;
-    right: 22px;
-    top: 108px;
-    width: auto;
+    right: auto;
+    top: 252px;
+    width: max-content;
     z-index: 21;
   }
 
   .mobile-menu-panel {
     background: transparent;
     display: none;
-    gap: 14px;
-    left: 22px;
+    gap: 16px;
+    justify-items: center;
+    left: 0;
     margin: 0;
     position: fixed;
-    right: 22px;
-    top: 214px;
+    right: 0;
+    text-align: center;
+    top: 350px;
     z-index: 21;
   }
 
   .mobile-menu-panel .weather-chip {
-    color: rgba(255, 255, 255, 0.9);
+    justify-content: center;
+    color: #0f31bf;
     font-size: 12px;
     white-space: normal;
   }
 
   .mobile-menu-panel .weather-icon {
-    color: rgba(255, 255, 255, 0.72);
+    color: #5f6673;
     font-size: 23px;
   }
 
   .mobile-menu-panel .today-date {
-    color: rgba(255, 255, 255, 0.82);
+    color: #082b75;
     font-family: Georgia, "Times New Roman", serif;
     font-size: 12px;
     white-space: normal;
   }
 
   .mobile-menu-panel .top-actions {
+    justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
   }
@@ -991,8 +1013,8 @@ textarea {
   }
 
   .mobile-menu-panel .login-chip {
-    background: #ffffff;
-    color: #06295b;
+    background: #08295b;
+    color: #ffffff;
     min-height: 28px;
   }
 
@@ -1013,10 +1035,14 @@ textarea {
     display: grid;
   }
 
+  .menu-open .action-nav {
+    display: flex;
+  }
+
   .action-nav a {
     background: transparent;
     border-radius: 0;
-    color: #ffffff;
+    color: #111827;
     flex: 0 0 auto;
     font-family: Georgia, "Times New Roman", serif;
     font-size: 15px;
@@ -1026,11 +1052,17 @@ textarea {
     padding: 10px 0;
   }
 
+  .action-nav a:hover,
+  .action-nav a.active {
+    background: transparent;
+    color: var(--brand-red);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transform: none;
+  }
+
   .action-nav .icon-link {
-    color: #ffffff;
-    flex: 0 0 auto;
-    font-size: 20px;
-    justify-content: flex-start;
+    display: none;
   }
 
   main {
